@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Psychology 2025 Study Guide</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --secondary: #7C3AED;
+            --accent: #EC4899;
+            --light: #F3F4F6;
+            --dark: #1F2937;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            background-color: #f9fafb;
+            scroll-behavior: smooth;
+        }
+        
+        .section-container {
+            display: none;
+        }
+        
+        .section-container.active {
+            display: block;
+        }
+
+        /* Flashcard styles */
+        .flashcard-container {
+            perspective: 1000px;
+        }
+        
+        .flashcard {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            height: 100%;
+        }
+        
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        
+        .flashcard-front {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .flashcard-back {
+            background-color: var(--secondary);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        /* Quiz styles */
+        .quiz-option {
+            transition: all 0.3s ease;
+        }
+        
+        .quiz-option:hover {
+            background-color: #e0e7ff;
+        }
+        
+        .quiz-option.correct {
+            background-color: #d1fae5;
+            border-color: #10b981;
+        }
+        
+        .quiz-option.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+        }
+        
+        /* Drag and Drop */
+        .draggable {
+            cursor: move;
+            transition: all 0.2s ease;
+        }
+        
+        .draggable.dragging {
+            opacity: 0.5;
+            background-color: #e0e7ff;
+        }
+        
+        .drop-zone {
+            min-height: 60px;
+            border: 2px dashed #e5e7eb;
+            transition: all 0.2s ease;
+        }
+        
+        .drop-zone.dragover {
+            background-color: #e0e7ff;
+            border-color: var(--primary);
+        }
+        
+        /* Brain diagram styles */
+        .brain-region {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .brain-region:hover {
+            filter: brightness(1.2);
+        }
+        
+        .brain-region.selected {
+            stroke: var(--accent);
+            stroke-width: 2px;
+        }
+        
+        /* Progress bar */
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        /* Print styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            .section-container {
+                display: block !important;
+                page-break-inside: avoid;
+            }
+            
+            .page-break {
+                page-break-after: always;
+            }
+        }
+
+        /* Custom tabs */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            font-weight: 600;
+        }
+        
+        /* Countdown timer */
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .countdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .countdown-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .countdown-label {
+            font-size: 0.875rem;
+            color: var(--dark);
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg no-print">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="fas fa-brain text-2xl mr-3"></i>
+                    <h1 class="text-2xl font-bold">AP Psychology 2025 Study Guide</h1>
+                </div>
+                <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <div class="countdown-timer bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                        <div class="countdown-item">
+                            <span id="countdown-days" class="countdown-number">0</span>
+                            <span class="countdown-label">Days</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span id="countdown-hours" class="countdown-number">0</span>
+                            <span class="countdown-label">Hours</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span id="countdown-minutes" class="countdown-number">0</span>
+                            <span class="countdown-label">Minutes</span>
+                        </div>
+                    </div>
+                    <button id="progress-button" class="flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg px-4 py-2 transition-all">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        <span>Track Progress</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-10 no-print">
+        <div class="container mx-auto px-4">
+            <div class="flex overflow-x-auto py-2 space-x-6">
+                <button class="nav-link tab active whitespace-nowrap py-2" data-target="home">
+                    <i class="fas fa-home mr-1"></i> Home
+                </button>
+                <button class="nav-link tab whitespace-nowrap py-2" data-target="unit1">
+                    <i class="fas fa-brain mr-1"></i> Unit 1: Biological Bases
+                </button>
+                <button class="nav-link tab whitespace-nowrap py-2" data-target="unit2">
+                    <i class="fas fa-lightbulb mr-1"></i> Unit 2: Cognition
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Home Section -->
+        <section id="home" class="section-container active" data-section="home">
+            <h2 class="text-2xl font-bold mb-6">Welcome to AP Psychology Study Guide</h2>
+            
+            <!-- Sample Flashcard -->
+            <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="p-6">
+                    <div class="flashcard-container h-48">
+                        <div class="flashcard">
+                            <div class="flashcard-front rounded-lg flex items-center justify-center h-full">
+                                <p class="text-center font-medium">What is the role of the amygdala in the brain?</p>
+                            </div>
+                            <div class="flashcard-back rounded-lg h-full">
+                                <div class="p-4">
+                                    <p>The amygdala is responsible for:</p>
+                                    <ul class="list-disc list-inside mt-2">
+                                        <li>Processing emotions</li>
+                                        <li>Fear response</li>
+                                        <li>Emotional memory</li>
+                                        <li>Decision making</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Quiz -->
+            <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="quiz-question">
+                        <p class="font-medium mb-4">Which part of the brain is primarily responsible for memory formation?</p>
+                        <div class="space-y-2">
+                            <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="true">
+                                Hippocampus
+                            </div>
+                            <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="false">
+                                Amygdala
+                            </div>
+                            <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="false">
+                                Cerebellum
+                            </div>
+                            <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="false">
+                                Hypothalamus
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unit 1 Section -->
+        <section id="unit1" class="section-container" data-section="unit1">
+            <h2 class="text-2xl font-bold mb-6">Unit 1: Biological Bases</h2>
+            <!-- Unit 1 content -->
+        </section>
+
+        <!-- Unit 2 Section -->
+        <section id="unit2" class="section-container" data-section="unit2">
+            <h2 class="text-2xl font-bold mb-6">Unit 2: Cognition</h2>
+            <!-- Unit 2 content -->
+        </section>
+    </main>
+
+    <!-- Add this before closing body tag -->
+    <script>
+        // Countdown Timer
+        function updateCountdown() {
+            const examDate = new Date('2025-05-09T00:00:00');
+            const now = new Date();
+            const diff = examDate - now;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            document.getElementById('countdown-days').textContent = days;
+            document.getElementById('countdown-hours').textContent = hours;
+            document.getElementById('countdown-minutes').textContent = minutes;
+        }
+
+        // Tab Navigation
+        document.querySelectorAll('.nav-link').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-link').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+                
+                tab.classList.add('active');
+                const target = tab.getAttribute('data-target');
+                const section = document.querySelector(`[data-section="${target}"]`);
+                if (section) section.classList.add('active');
+            });
+        });
+
+        // Flashcards
+        document.querySelectorAll('.flashcard').forEach(card => {
+            card.addEventListener('click', () => card.classList.toggle('flipped'));
+        });
+
+        // Quiz functionality
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const isCorrect = this.getAttribute('data-correct') === 'true';
+                this.classList.add(isCorrect ? 'correct' : 'incorrect');
+                
+                const questionOptions = this.closest('.quiz-question').querySelectorAll('.quiz-option');
+                questionOptions.forEach(opt => opt.style.pointerEvents = 'none');
+            });
+        });
+
+        // Progress Tracking
+        const progressButton = document.getElementById('progress-button');
+        if (progressButton) {
+            progressButton.addEventListener('click', () => {
+                const progress = JSON.parse(localStorage.getItem('studyProgress') || '{}');
+                const totalTopics = document.querySelectorAll('.topic').length;
+                const completedTopics = Object.values(progress).filter(Boolean).length;
+                const progressPercentage = (completedTopics / totalTopics) * 100;
+
+                const progressBar = document.querySelector('.progress-fill');
+                if (progressBar) progressBar.style.width = `${progressPercentage}%`;
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCountdown();
+            setInterval(updateCountdown, 60000);
+        });
+    </script>
+</body>
+</html>
