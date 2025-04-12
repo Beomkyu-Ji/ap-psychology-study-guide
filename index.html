@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Psychology 2025 Study Guide</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --secondary: #7C3AED;
+            --accent: #EC4899;
+            --light: #F3F4F6;
+            --dark: #1F2937;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            background-color: #f9fafb;
+            scroll-behavior: smooth;
+        }
+        
+        .section-container {
+            display: none;
+        }
+        
+        .section-container.active {
+            display: block;
+        }
+
+        /* Flashcard styles */
+        .flashcard-container {
+            perspective: 1000px;
+        }
+        
+        .flashcard {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            height: 100%;
+        }
+        
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        
+        .flashcard-front {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .flashcard-back {
+            background-color: var(--secondary);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        /* Quiz styles */
+        .quiz-option {
+            transition: all 0.3s ease;
+        }
+        
+        .quiz-option:hover {
+            background-color: #e0e7ff;
+        }
+        
+        .quiz-option.correct {
+            background-color: #d1fae5;
+            border-color: #10b981;
+        }
+        
+        .quiz-option.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+        }
+        
+        /* Drag and Drop */
+        .draggable {
+            cursor: move;
+            transition: all 0.2s ease;
+        }
+        
+        .draggable.dragging {
+            opacity: 0.5;
+            background-color: #e0e7ff;
+        }
+        
+        .drop-zone {
+            min-height: 60px;
+            border: 2px dashed #e5e7eb;
+            transition: all 0.2s ease;
+        }
+        
+        .drop-zone.dragover {
+            background-color: #e0e7ff;
+            border-color: var(--primary);
+        }
+        
+        /* Brain diagram styles */
+        .brain-region {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .brain-region:hover {
+            filter: brightness(1.2);
+        }
+        
+        .brain-region.selected {
+            stroke: var(--accent);
+            stroke-width: 2px;
+        }
+        
+        /* Progress bar */
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        /* Print styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            .section-container {
+                display: block !important;
+                page-break-inside: avoid;
+            }
+            
+            .page-break {
+                page-break-after: always;
+            }
+        }
+
+        /* Custom tabs */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            font-weight: 600;
+        }
+        
+        /* Countdown timer */
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .countdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .countdown-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .countdown-label {
+            font-size: 0.875rem;
+            color: var(--dark);
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg no-print">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="fas fa-brain text-2xl mr-3"></i>
+                    <h1 class="text-2xl font-bold">AP Psychology 2025 Study Guide</h1>
+                </div>
+                <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <div class="countdown-timer bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                        <div class="countdown-item">
+                            <span id="countdown-days" class="countdown-number">0</span>
+                            <span class="countdown-label">Days</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span id="countdown-hours" class="countdown-number">0</span>
+                            <span class="countdown-label">Hours</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span id="countdown-minutes" class="countdown-number">0</span>
+                            <span class="countdown-label">Minutes</span>
+                        </div>
+                    </div>
+                    <button id="progress-button" class="flex items-center bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg px-4 py-2 transition-all">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        <span>Track Progress</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-10 no-print">
+        <div class="container mx-auto px-4">
+            <div class="flex overflow-x-auto py-2 space-x-6">
+                <button class="nav-link tab active whitespace-nowrap py-2" data-target="home">
+                    <i class="fas fa-home mr-1"></i> Home
+                </button>
+                <button class="nav-link tab whitespace-nowrap py-2" data-target="unit1">
+                    <i class="fas fa-brain mr-1"></i> Unit 1: Biological Bases
+                </button>
+                <button class="nav-link tab whitespace-nowrap py-2" data-target="unit2">
+                    <i class="fas fa-lightbulb mr-1"></i> Unit 2: Cognition
+                </button>
+                <button class="nav-link tab whitespace-nowrap py-2" data-target="unit3">
+                    <i class="fas fa-child mr-1"></i> Unit 3: Development & Learning
+                </button>
+                <button class="nav-link tab whitespace-nowrap py-2" data-target="unit4">
+                    <i class="fas fa-users mr-1"></i> Unit 4: Social & Personality
+                </button>
+                <button class="nav-link tab whitespace-nowrap py-2" data-target="unit5">
+                    <i class="fas fa-heartbeat mr-1"></i> Unit 5: Mental Health
+                </button>
+                <button class="nav-link tab whitespace-nowrap py-2" data-target="frq">
+                    <i class="fas fa-pen-fancy mr-1"></i> FRQ Practice
+                </button>
+                <button class="nav-link tab whitespace-nowrap py-2" data-target="studyplan">
+                    <i class="fas fa-calendar-alt mr-1"></i> Study Plan
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Home Section -->
+        <section id="home" class="section-container active">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-8 text-white">
+                    <h2 class="text-3xl font-bold mb-2">Welcome to Your AP Psychology 2025 Study Guide</h2>
+                    <p class="text-lg opacity-90">Comprehensive preparation for the redesigned AP Psychology exam</p>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4 text-indigo-700">2025 Exam Format</h3>
+                            <div class="bg-indigo-50 rounded-lg p-4 mb-4">
+                                <div class="flex items-start mb-3">
+                                    <i class="fas fa-laptop-code text-indigo-600 mt-1 mr-3"></i>
+                                    <div>
+                                        <h4 class="font-medium">Digital Format</h4>
+                                        <p>The 2025 AP Psychology exam will be fully digital, administered through the College Board's Bluebook application.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start mb-3">
+                                    <i class="fas fa-calendar-day text-indigo-600 mt-1 mr-3"></i>
+                                    <div>
+                                        <h4 class="font-medium">Exam Date</h4>
+                                        <p>Friday, May 16, 2025 at 12:00 PM local time</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start mb-3">
+                                    <i class="fas fa-clock text-indigo-600 mt-1 mr-3"></i>
+                                    <div>
+                                        <h4 class="font-medium">Exam Duration</h4>
+                                        <p>2 hours and 40 minutes total (90 minutes for MCQs, 70 minutes for FRQs)</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-percentage text-indigo-600 mt-1 mr-3"></i>
+                                    <div>
+                                        <h4 class="font-medium">Scoring</h4>
+                                        <p>Score scale of 1-5, with 3+ generally considered passing at most colleges</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="text-xl font-semibold mb-4 text-indigo-700">Key Curriculum Changes</h3>
+                            <div class="bg-purple-50 rounded-lg p-4">
+                                <div class="flex items-start mb-3">
+                                    <i class="fas fa-sync-alt text-purple-600 mt-1 mr-3"></i>
+                                    <div>
+                                        <h4 class="font-medium">Restructured Units</h4>
+                                        <p>Reorganized from 9 units to 5 core units aligned with the "five pillars" of introductory psychology</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start mb-3">
+                                    <i class="fas fa-graduation-cap text-purple-600 mt-1 mr-3"></i>
+                                    <div>
+                                        <h4 class="font-medium">Science Practices</h4>
+                                        <p>Greater emphasis on scientific thinking, data analysis, and research methods</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-book-medical text-purple-600 mt-1 mr-3"></i>
+                                    <div>
+                                        <h4 class="font-medium">New Content Areas</h4>
+                                        <p>Addition of health psychology and positive psychology topics to make the course more relevant</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4 text-indigo-700">Exam Structure</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div class="bg-indigo-50 rounded-lg p-4">
+                                    <h4 class="font-medium text-center mb-2">Section I: Multiple Choice</h4>
+                                    <div class="flex justify-center mb-2">
+                                        <span class="inline-block bg-indigo-100 text-indigo-800 font-semibold rounded-full px-3 py-1 text-sm">66.7% of Exam Score</span>
+                                    </div>
+                                    <ul class="list-disc list-inside space-y-2 text-sm">
+                                        <li>75 questions (reduced from previous 100)</li>
+                                        <li>4 answer choices per question (reduced from 5)</li>
+                                        <li>90 minutes to complete</li>
+                                        <li>Tests content knowledge and application</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-purple-50 rounded-lg p-4">
+                                    <h4 class="font-medium text-center mb-2">Section II: Free Response</h4>
+                                    <div class="flex justify-center mb-2">
+                                        <span class="inline-block bg-purple-100 text-purple-800 font-semibold rounded-full px-3 py-1 text-sm">33.3% of Exam Score</span>
+                                    </div>
+                                    <ul class="list-disc list-inside space-y-2 text-sm">
+                                        <li>2 free-response questions</li>
+                                        <li>70 minutes to complete</li>
+                                        <li>Tests application, analysis, and synthesis</li>
+                                        <li>Typed responses in Bluebook</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h3 class="text-xl font-semibold mb-4 text-indigo-700">Study Tips & Strategies</h3>
+                            <div class="bg-indigo-50 rounded-lg p-4">
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                        <span><strong>Active learning:</strong> Use flashcards, create mind maps, and teach concepts to others</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                        <span><strong>Spaced repetition:</strong> Review material at increasing intervals to improve retention</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                        <span><strong>Practice MCQs & FRQs:</strong> Regularly test yourself under timed conditions</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                        <span><strong>Use examples:</strong> Connect psychological concepts to real-life situations</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                        <span><strong>Master terminology:</strong> Psychology has a specific vocabulary—learn it well</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-pink-500 to-red-500 px-6 py-4 text-white">
+                    <h2 class="text-xl font-bold">Quick Unit Overview</h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                            <div class="bg-indigo-100 px-4 py-2 border-b border-indigo-200">
+                                <h3 class="font-semibold text-indigo-800">Unit 1: Biological Bases of Behavior</h3>
+                            </div>
+                            <div class="p-4">
+                                <p class="text-sm text-gray-600 mb-3">Explores the physical and chemical structures that underlie behavior and mental processes.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-500">15-25% of exam</span>
+                                    <button class="nav-link text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-1 rounded transition-colors" data-target="unit1">Study Now</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                            <div class="bg-blue-100 px-4 py-2 border-b border-blue-200">
+                                <h3 class="font-semibold text-blue-800">Unit 2: Cognition</h3>
+                            </div>
+                            <div class="p-4">
+                                <p class="text-sm text-gray-600 mb-3">Covers how we process, store, and retrieve information, including memory, thinking, and intelligence.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-500">15-25% of exam</span>
+                                    <button class="nav-link text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 px-3 py-1 rounded transition-colors" data-target="unit2">Study Now</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                            <div class="bg-green-100 px-4 py-2 border-b border-green-200">
+                                <h3 class="font-semibold text-green-800">Unit 3: Development and Learning</h3>
+                            </div>
+                            <div class="p-4">
+                                <p class="text-sm text-gray-600 mb-3">Examines how we develop throughout life and acquire new behaviors through various learning processes.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-500">15-25% of exam</span>
+                                    <button class="nav-link text-xs bg-green-100 hover:bg-green-200 text-green-800 px-3 py-1 rounded transition-colors" data-target="unit3">Study Now</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                            <div class="bg-purple-100 px-4 py-2 border-b border-purple-200">
+                                <h3 class="font-semibold text-purple-800">Unit 4: Social Psychology and Personality</h3>
+                            </div>
+                            <div class="p-4">
+                                <p class="text-sm text-gray-600 mb-3">Focuses on how we relate to others and the unique patterns of thoughts, feelings, and behaviors that define us.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-500">15-25% of exam</span>
+                                    <button class="nav-link text-xs bg-purple-100 hover:bg-purple-200 text-purple-800 px-3 py-1 rounded transition-colors" data-target="unit4">Study Now</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                            <div class="bg-red-100 px-4 py-2 border-b border-red-200">
+                                <h3 class="font-semibold text-red-800">Unit 5: Mental and Physical Health</h3>
+                            </div>
+                            <div class="p-4">
+                                <p class="text-sm text-gray-600 mb-3">Explores psychological disorders, treatment approaches, and factors that influence health and well-being.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-500">15-25% of exam</span>
+                                    <button class="nav-link text-xs bg-red-100 hover:bg-red-200 text-red-800 px-3 py-1 rounded transition-colors" data-target="unit5">Study Now</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                            <div class="bg-yellow-100 px-4 py-2 border-b border-yellow-200">
+                                <h3 class="font-semibold text-yellow-800">FRQ Practice & Study Plan</h3>
+                            </div>
+                            <div class="p-4">
+                                <p class="text-sm text-gray-600 mb-3">Dedicated resources to help you master free-response questions and organize your study schedule.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-500">33.3% of exam</span>
+                                    <button class="nav-link text-xs bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-1 rounded transition-colors" data-target="frq">Practice Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-4 text-white">
+                    <h2 class="text-xl font-bold">Tips for Digital Exam Success</h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-blue-50 rounded-lg p-4">
+                            <h3 class="font-semibold text-blue-800 mb-3">Bluebook Familiarity</h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-laptop text-blue-600 mt-1 mr-2"></i>
+                                    <span>Practice with the Bluebook app before exam day to get comfortable with the interface</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-mouse-pointer text-blue-600 mt-1 mr-2"></i>
+                                    <span>Learn keyboard shortcuts for highlighting, answering questions, and navigating between screens</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-cog text-blue-600 mt-1 mr-2"></i>
+                                    <span>Get familiar with tools like the timer, reference sheets, and the equation editor</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="bg-cyan-50 rounded-lg p-4">
+                            <h3 class="font-semibold text-cyan-800 mb-3">Technical Preparation</h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-battery-full text-cyan-600 mt-1 mr-2"></i>
+                                    <span>Ensure your device is fully charged and bring a charger to the exam</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-wifi text-cyan-600 mt-1 mr-2"></i>
+                                    <span>Close other applications and disable notifications during practice sessions</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-keyboard text-cyan-600 mt-1 mr-2"></i>
+                                    <span>Practice typing responses efficiently, as FRQs will require typing rather than handwriting</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unit 1: Biological Bases of Behavior -->
+        <section id="unit1" class="section-container">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-indigo-500 to-blue-500 px-6 py-8 text-white">
+                    <h2 class="text-3xl font-bold mb-2">Unit 1: Biological Bases of Behavior</h2>
+                    <p class="text-lg opacity-90">The physical systems and processes that underlie psychological phenomena</p>
+                </div>
+
+                <!-- Unit Navigation Tabs -->
+                <div class="bg-gray-50 px-6 py-3 border-b">
+                    <div class="flex overflow-x-auto space-x-6">
+                        <button class="unit1-tab tab active whitespace-nowrap py-2" data-target="unit1-overview">Overview</button>
+                        <button class="unit1-tab tab whitespace-nowrap py-2" data-target="unit1-1">1.1 Heredity & Environment</button>
+                        <button class="unit1-tab tab whitespace-nowrap py-2" data-target="unit1-2">1.2 Nervous System</button>
+                        <button class="unit1-tab tab whitespace-nowrap py-2" data-target="unit1-3">1.3 Neuron & Neural Firing</button>
+                        <button class="unit1-tab tab whitespace-nowrap py-2" data-target="unit1-4">1.4 The Brain</button>
+                        <button class="unit1-tab tab whitespace-nowrap py-2" data-target="unit1-5">1.5 Sleep</button>
+                        <button class="unit1-tab tab whitespace-nowrap py-2" data-target="unit1-6">1.6 Sensation</button>
+                        <button class="unit1-tab tab whitespace-nowrap py-2" data-target="unit1-quiz">Practice Quiz</button>
+                    </div>
+                </div>
+
+                <!-- Unit 1 Content -->
+                <div class="p-6">
+                    <!-- Overview -->
+                    <div id="unit1-overview" class="unit1-content tab-content active">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2">
+                                <h3 class="text-xl font-semibold mb-4 text-indigo-700">Unit Overview</h3>
+                                <p class="mb-4">The Biological Bases of Behavior unit explores how biological processes influence psychological phenomena. This unit lays the foundation for understanding the physical structures and mechanisms that enable human behavior, thought, and emotion.</p>
+                                
+                                <h4 class="text-lg font-medium mb-2 text-indigo-600">Key Topics</h4>
+                                <ul class="list-disc list-inside space-y-1 mb-6">
+                                    <li>Interaction of genetics and environment</li>
+                                    <li>Structure and function of the nervous system</li>
+                                    <li>Neural communication and neurotransmitters</li>
+                                    <li>Brain regions and their specialized functions</li>
+                                    <li>Sleep stages and circadian rhythms</li>
+                                    <li>Sensation and sensory processing</li>
+                                </ul>
+                                
+                                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                                    <h4 class="font-medium mb-2 text-blue-700">Why This Unit Matters</h4>
+                                    <p>Understanding biological bases of behavior provides essential context for all psychological phenomena. Every thought, emotion, and behavior has underlying biological processes. This unit helps you see the connection between physical structures (like neurons and brain regions) and psychological experiences (like memory, emotion, and consciousness).</p>
+                                </div>
+                                
+                                <h4 class="text-lg font-medium mb-2 text-indigo-600">Exam Significance</h4>
+                                <p class="mb-4">Unit 1 represents approximately 15-25% of the AP Psychology exam content, appearing in both multiple-choice questions and free-response sections. Questions typically ask you to:</p>
+                                <ul class="list-disc list-inside space-y-1 mb-4">
+                                    <li>Identify brain structures and their functions</li>
+                                    <li>Explain how neurons communicate</li>
+                                    <li>Describe how genetics influence behavior</li>
+                                    <li>Connect biological processes to psychological phenomena</li>
+                                    <li>Interpret research findings related to biological psychology</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-indigo-50 rounded-lg p-6">
+                                <h3 class="text-lg font-semibold mb-4 text-indigo-700">Study Tips for Unit 1</h3>
+                                <ul class="space-y-4">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-brain text-indigo-600 mt-1 mr-3"></i>
+                                        <div>
+                                            <h4 class="font-medium">Use visual aids</h4>
+                                            <p class="text-sm">Create or study diagrams of brain regions, neurons, and neural communication. Visual representation helps with remembering structures and their relationships.</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-puzzle-piece text-indigo-600 mt-1 mr-3"></i>
+                                        <div>
+                                            <h4 class="font-medium">Connect structure to function</h4>
+                                            <p class="text-sm">Instead of memorizing lists, focus on understanding how the structure of each component relates to its function.</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-link text-indigo-600 mt-1 mr-3"></i>
+                                        <div>
+                                            <h4 class="font-medium">Make real-world connections</h4>
+                                            <p class="text-sm">Relate biological concepts to everyday experiences (e.g., how caffeine affects neurotransmitters, why we feel jet lag).</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-chart-line text-indigo-600 mt-1 mr-3"></i>
+                                        <div>
+                                            <h4 class="font-medium">Study one system at a time</h4>
+                                            <p class="text-sm">Master each component of the nervous system before moving on to the next. Build your knowledge systematically.</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                                
+                                <div class="mt-6 pt-6 border-t border-indigo-100">
+                                    <h4 class="font-medium mb-3 text-indigo-700">Key Terms to Master</h4>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="bg-white rounded-full px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm">Neurons</span>
+                                        <span class="bg-white rounded-full px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm">Neurotransmitters</span>
+                                        <span class="bg-white rounded-full px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm">Action Potential</span>
+                                        <span class="bg-white rounded-full px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm">Cerebral Cortex</span>
+                                        <span class="bg-white rounded-full px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm">Limbic System</span>
+                                        <span class="bg-white rounded-full px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm">Neuroplasticity</span>
+                                        <span class="bg-white rounded-full px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm">REM Sleep</span>
+                                        <span class="bg-white rounded-full px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm">Circadian Rhythm</span>
+                                        <span class="bg-white rounded-full px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm">Sensation</span>
+                                        <span class="bg-white rounded-full px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm">Transduction</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Unit Progress Tracker -->
+                        <div class="mt-8 bg-white border rounded-lg p-4 shadow-sm">
+                            <h3 class="font-semibold text-gray-700 mb-3">Your Unit 1 Progress</h3>
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                    <span>Overall Completion</span>
+                                    <span id="unit1-progress-percent">0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div id="unit1-progress-bar" class="progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 rounded-full bg-gray-300 mr-2 unit1-topic-indicator" data-topic="unit1-1"></div>
+                                    <span>1.1 Heredity & Environment</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 rounded-full bg-gray-300 mr-2 unit1-topic-indicator" data-topic="unit1-2"></div>
+                                    <span>1.2 Nervous System</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 rounded-full bg-gray-300 mr-2 unit1-topic-indicator" data-topic="unit1-3"></div>
+                                    <span>1.3 Neuron & Neural Firing</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 rounded-full bg-gray-300 mr-2 unit1-topic-indicator" data-topic="unit1-4"></div>
+                                    <span>1.4 The Brain</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 rounded-full bg-gray-300 mr-2 unit1-topic-indicator" data-topic="unit1-5"></div>
+                                    <span>1.5 Sleep</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 rounded-full bg-gray-300 mr-2 unit1-topic-indicator" data-topic="unit1-6"></div>
+                                    <span>1.6 Sensation</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 1.1 Heredity & Environment -->
+                    <div id="unit1-1" class="unit1-content tab-content">
+                        <h3 class="text-xl font-semibold mb-4 text-indigo-700">1.1 Interaction of Heredity and Environment</h3>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2">
+                                <p class="mb-4">The nature vs. nurture debate explores how genetics (nature) and environment (nurture) influence psychological traits and behaviors. Modern psychology recognizes that both factors interact in complex ways to shape who we are.</p>
+                                
+                                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                                    <h4 class="font-medium mb-2 text-blue-700">Key Concept: Gene-Environment Interaction</h4>
+                                    <p>Genetic predispositions and environmental factors work together to influence behavior and development. Genes can affect how sensitive we are to environmental factors, while environments can determine whether certain genetic tendencies are expressed.</p>
+                                </div>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">Research Methods in Behavioral Genetics</h4>
+                                
+                                <div class="space-y-4 mb-6">
+                                    <div class="border-l-4 border-indigo-400 pl-4">
+                                        <h5 class="font-medium">Twin Studies</h5>
+                                        <p class="text-sm">Comparing identical twins (who share 100% of their genes) with fraternal twins (who share about 50%) helps researchers estimate the genetic contribution to traits. Higher similarity in identical twins suggests stronger genetic influence.</p>
+                                        <p class="text-sm mt-2"><strong>Example:</strong> Studies show that identical twins have more similar IQ scores (correlation of about 0.85) than fraternal twins (correlation of about 0.6), suggesting a significant genetic component to intelligence.</p>
+                                    </div>
+                                    
+                                    <div class="border-l-4 border-indigo-400 pl-4">
+                                        <h5 class="font-medium">Adoption Studies</h5>
+                                        <p class="text-sm">Examining individuals raised by non-biological parents helps separate genetic and environmental influences. Similarities to biological parents suggest genetic influence, while similarities to adoptive parents indicate environmental influence.</p>
+                                        <p class="text-sm mt-2"><strong>Example:</strong> Adopted children's intelligence correlates more with their biological parents than their adoptive parents, suggesting significant genetic influence on intelligence.</p>
+                                    </div>
+                                    
+                                    <div class="border-l-4 border-indigo-400 pl-4">
+                                        <h5 class="font-medium">Family Studies</h5>
+                                        <p class="text-sm">Examining trait prevalence among biological relatives of different degrees helps determine heritability. The more closely related individuals are, the more similar they should be in heritable traits.</p>
+                                        <p class="text-sm mt-2"><strong>Example:</strong> The risk of developing schizophrenia increases with genetic relatedness to someone with the disorder, from about 1% in the general population to 48% for the identical twin of someone with schizophrenia.</p>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">Important Terminology</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                    <div class="bg-gray-50 rounded-lg p-3">
+                                        <h5 class="font-medium text-indigo-700">Heritability</h5>
+                                        <p class="text-sm">The proportion of variance in a trait within a population that can be attributed to genetic factors. Heritability estimates range from 0 to 1, with higher numbers indicating stronger genetic influence.</p>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 rounded-lg p-3">
+                                        <h5 class="font-medium text-indigo-700">Epigenetics</h5>
+                                        <p class="text-sm">The study of how environmental factors can affect gene expression without changing the DNA sequence. Environmental factors can turn genes "on" or "off" through chemical modifications.</p>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 rounded-lg p-3">
+                                        <h5 class="font-medium text-indigo-700">Range of Reaction</h5>
+                                        <p class="text-sm">The concept that genes establish a range of possible outcomes, while environmental influences determine where within that range a person falls.</p>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 rounded-lg p-3">
+                                        <h5 class="font-medium text-indigo-700">Phenotype & Genotype</h5>
+                                        <p class="text-sm">Genotype is the genetic makeup, while phenotype is the observable characteristics resulting from interaction of genotype with the environment.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-6">
+                                <!-- Interactive Flashcard -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="bg-indigo-100 px-4 py-2 border-b border-indigo-200">
+                                        <h4 class="font-medium text-indigo-800">Concept Flashcard</h4>
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="flashcard-container h-48">
+                                            <div class="flashcard">
+                                                <div class="flashcard-front rounded-lg flex items-center justify-center h-full">
+                                                    <p class="text-center font-medium">What is heritability and how is it misunderstood?</p>
+                                                </div>
+                                                <div class="flashcard-back rounded-lg h-full overflow-auto">
+                                                    <div class="p-4">
+                                                        <p class="text-sm"><strong>Heritability</strong> measures how much variation in a trait within a population is due to genetic variation.</p>
+                                                        <p class="text-sm mt-2">Common misconceptions:</p>
+                                                        <ul class="list-disc list-inside text-sm mt-1">
+                                                            <li>Heritability does NOT indicate how much of an individual's trait is genetic</li>
+                                                            <li>High heritability does NOT mean a trait cannot be changed by environment</li>
+                                                            <li>Heritability estimates apply to populations, not individuals</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="flip-card-btn mt-4 w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 py-2 rounded transition-colors">Flip Card</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Key Researchers -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="bg-indigo-100 px-4 py-2 border-b border-indigo-200">
+                                        <h4 class="font-medium text-indigo-800">Key Researchers</h4>
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="space-y-3">
+                                            <div class="flex items-start">
+                                                <div class="flex-shrink-0 w-12 h-12 bg-indigo-200 rounded-full flex items-center justify-center">
+                                                    <span class="text-indigo-700 font-bold">FG</span>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <h5 class="font-medium">Francis Galton</h5>
+                                                    <p class="text-sm">Pioneer in studying heredity and human differences; developed concept of "nature versus nurture"</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start">
+                                                <div class="flex-shrink-0 w-12 h-12 bg-indigo-200 rounded-full flex items-center justify-center">
+                                                    <span class="text-indigo-700 font-bold">TB</span>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <h5 class="font-medium">Thomas Bouchard</h5>
+                                                    <p class="text-sm">Conducted the "Minnesota Study of Twins Reared Apart," finding surprising similarities in twins raised separately</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start">
+                                                <div class="flex-shrink-0 w-12 h-12 bg-indigo-200 rounded-full flex items-center justify-center">
+                                                    <span class="text-indigo-700 font-bold">RP</span>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <h5 class="font-medium">Robert Plomin</h5>
+                                                    <p class="text-sm">Pioneer in behavioral genetics; developed methods for identifying specific genes related to behavior</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Check Your Understanding -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="bg-green-100 px-4 py-2 border-b border-green-200">
+                                        <h4 class="font-medium text-green-800">Check Your Understanding</h4>
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="mb-4">
+                                            <p class="font-medium mb-2">Which of the following best illustrates epigenetics?</p>
+                                            <div class="space-y-2">
+                                                <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="false">
+                                                    A) Identical twins having different heights due to different nutrition
+                                                </div>
+                                                <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="true">
+                                                    B) Maternal stress during pregnancy affecting gene expression in offspring
+                                                </div>
+                                                <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="false">
+                                                    C) A mutation causing a change in DNA sequence
+                                                </div>
+                                                <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="false">
+                                                    D) Siblings sharing 50% of their genes
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="question-feedback" class="hidden mb-3 p-3 rounded-lg"></div>
+                                        <button id="check-answer-btn" class="w-full bg-green-100 hover:bg-green-200 text-green-800 py-2 rounded transition-colors">Check Answer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Application Example -->
+                        <div class="mt-8 bg-gray-50 rounded-lg p-5 border border-gray-200">
+                            <h4 class="text-lg font-medium mb-3 text-indigo-700">Real-World Application: Understanding Gene-Environment Interaction</h4>
+                            <p class="mb-3">Consider the relationship between genetics and alcoholism:</p>
+                            <ul class="list-disc list-inside space-y-2 mb-4">
+                                <li>Some people have genetic variations that affect how alcohol is metabolized or how pleasurable it feels.</li>
+                                <li>These genetic factors can increase susceptibility to alcohol dependence.</li>
+                                <li>However, environmental factors like family attitudes toward drinking, peer pressure, and stress levels also play crucial roles.</li>
+                                <li>A person with genetic risk factors may never develop alcoholism if raised in an environment where alcohol is not available or drinking is discouraged.</li>
+                                <li>Conversely, environmental pressure might lead to alcohol problems even in those without genetic predispositions.</li>
+                            </ul>
+                            <p>This illustrates how genes and environment work together, rather than independently, to influence behavior and psychological outcomes.</p>
+                        </div>
+                        
+                        <!-- Mark as Complete Button -->
+                        <div class="mt-6 text-right">
+                            <button class="complete-topic-btn bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-medium py-2 px-4 rounded-lg transition-colors" data-topic="unit1-1">
+                                <i class="fas fa-check mr-2"></i>Mark as Complete
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 1.2 Nervous System -->
+                    <div id="unit1-2" class="unit1-content tab-content">
+                        <h3 class="text-xl font-semibold mb-4 text-indigo-700">1.2 Overview of the Nervous System</h3>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2">
+                                <p class="mb-4">The nervous system is the body's communication network, consisting of billions of neurons that transmit information throughout the body. It's organized into two main divisions: the central nervous system and the peripheral nervous system.</p>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">Structure of the Nervous System</h4>
+                                
+                                <div class="flex flex-col md:flex-row gap-4 mb-6">
+                                    <div class="flex-1 bg-blue-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-blue-700 mb-2">Central Nervous System (CNS)</h5>
+                                        <p class="text-sm">Consists of the brain and spinal cord. The CNS interprets incoming information and formulates responses.</p>
+                                        <ul class="list-disc list-inside text-sm mt-2">
+                                            <li>Protected by skull and vertebrae</li>
+                                            <li>Further protected by meninges (protective membranes)</li>
+                                            <li>Surrounded by cerebrospinal fluid</li>
+                                            <li>Protected by blood-brain barrier</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="flex-1 bg-purple-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-purple-700 mb-2">Peripheral Nervous System (PNS)</h5>
+                                        <p class="text-sm">Consists of all neural tissue outside the CNS. The PNS connects the CNS to the rest of the body.</p>
+                                        <ul class="list-disc list-inside text-sm mt-2">
+                                            <li>Includes all nerves throughout the body</li>
+                                            <li>Transmits sensory information to the CNS</li>
+                                            <li>Carries motor commands from the CNS</li>
+                                            <li>Divided into somatic and autonomic systems</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">Divisions of the Peripheral Nervous System</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-indigo-700 mb-2">Somatic Nervous System</h5>
+                                        <p class="text-sm">Controls voluntary movements and transmits sensory information from the skin, muscles, and joints.</p>
+                                        <ul class="list-disc list-inside text-sm mt-2">
+                                            <li>Voluntary control</li>
+                                            <li>Involved in skeletal muscle movement</li>
+                                            <li>Sensory information from external environment</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-indigo-700 mb-2">Autonomic Nervous System</h5>
+                                        <p class="text-sm">Regulates internal organs and glands, typically operating below the level of consciousness.</p>
+                                        <ul class="list-disc list-inside text-sm mt-2">
+                                            <li>Involuntary control</li>
+                                            <li>Maintains homeostasis</li>
+                                            <li>Regulates heart rate, digestion, respiration, etc.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">Autonomic Nervous System Divisions</h4>
+                                
+                                <div class="border rounded-lg overflow-hidden mb-6">
+                                    <table class="w-full">
+                                        <thead class="bg-indigo-50">
+                                            <tr>
+                                                <th class="px-4 py-2 text-left text-indigo-700">Function</th>
+                                                <th class="px-4 py-2 text-left text-indigo-700">Sympathetic Division</th>
+                                                <th class="px-4 py-2 text-left text-indigo-700">Parasympathetic Division</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y">
+                                            <tr>
+                                                <td class="px-4 py-2 font-medium">Primary Function</td>
+                                                <td class="px-4 py-2">"Fight-or-flight" response</td>
+                                                <td class="px-4 py-2">"Rest-and-digest" response</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-4 py-2 font-medium">Heart Rate</td>
+                                                <td class="px-4 py-2">Increases</td>
+                                                <td class="px-4 py-2">Decreases</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-4 py-2 font-medium">Respiration</td>
+                                                <td class="px-4 py-2">Increases</td>
+                                                <td class="px-4 py-2">Decreases</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-4 py-2 font-medium">Digestion</td>
+                                                <td class="px-4 py-2">Decreases</td>
+                                                <td class="px-4 py-2">Increases</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-4 py-2 font-medium">Pupils</td>
+                                                <td class="px-4 py-2">Dilate</td>
+                                                <td class="px-4 py-2">Constrict</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-4 py-2 font-medium">Blood Glucose</td>
+                                                <td class="px-4 py-2">Increases</td>
+                                                <td class="px-4 py-2">No direct effect</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                                    <h5 class="font-medium text-blue-700 mb-2">The Role of the Endocrine System</h5>
+                                    <p>While not part of the nervous system, the endocrine system works closely with it to regulate bodily functions. The endocrine system uses hormones released into the bloodstream to influence target organs, while the nervous system uses electrical impulses for more immediate effects.</p>
+                                    <p class="mt-2">The hypothalamus serves as a key connection point between these systems, regulating the pituitary gland which controls many other endocrine glands.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-6">
+                                <!-- Interactive Diagram -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="bg-indigo-100 px-4 py-2 border-b border-indigo-200">
+                                        <h4 class="font-medium text-indigo-800">Nervous System Organization</h4>
+                                    </div>
+                                    <div class="p-4">
+                                        <div id="nervous-system-diagram" class="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center mb-3">
+                                            <svg width="100%" height="100%" viewBox="0 0 800 400">
+                                                <!-- Nervous System Hierarchy -->
+                                                <!-- Main Divisions -->
+                                                <rect x="350" y="20" width="100" height="40" rx="5" fill="#8b5cf6" id="ns-main" class="brain-region" data-info="Nervous System: The body's communication network, consisting of neurons that transmit information throughout the body."/>
+                                                <text x="400" y="45" text-anchor="middle" fill="white" font-weight="bold">Nervous System</text>
+                                                
+                                                <!-- Lines connecting to CNS and PNS -->
+                                                <line x1="400" y1="60" x2="250" y2="100" stroke="#8b5cf6" stroke-width="2"/>
+                                                <line x1="400" y1="60" x2="550" y2="100" stroke="#8b5cf6" stroke-width="2"/>
+                                                
+                                                <!-- CNS and PNS -->
+                                                <rect x="200" y="100" width="100" height="40" rx="5" fill="#4f46e5" id="cns" class="brain-region" data-info="Central Nervous System (CNS): Consists of the brain and spinal cord. Processes information and coordinates body activities."/>
+                                                <text x="250" y="125" text-anchor="middle" fill="white" font-weight="bold">CNS</text>
+                                                
+                                                <rect x="500" y="100" width="100" height="40" rx="5" fill="#4f46e5" id="pns" class="brain-region" data-info="Peripheral Nervous System (PNS): All neural tissue outside the CNS. Connects the CNS to the rest of the body."/>
+                                                <text x="550" y="125" text-anchor="middle" fill="white" font-weight="bold">PNS</text>
+                                                
+                                                <!-- Lines from CNS -->
+                                                <line x1="250" y1="140" x2="200" y2="180" stroke="#4f46e5" stroke-width="2"/>
+                                                <line x1="250" y1="140" x2="300" y2="180" stroke="#4f46e5" stroke-width="2"/>
+                                                
+                                                <!-- Lines from PNS -->
+                                                <line x1="550" y1="140" x2="450" y2="180" stroke="#4f46e5" stroke-width="2"/>
+                                                <line x1="550" y1="140" x2="650" y2="180" stroke="#4f46e5" stroke-width="2"/>
+                                                
+                                                <!-- CNS Components -->
+                                                <rect x="150" y="180" width="100" height="40" rx="5" fill="#6366f1" id="brain" class="brain-region" data-info="Brain: The control center of the nervous system. Interprets sensory information and sends instructions to the body."/>
+                                                <text x="200" y="205" text-anchor="middle" fill="white">Brain</text>
+                                                
+                                                <rect x="250" y="180" width="100" height="40" rx="5" fill="#6366f1" id="spinal-cord" class="brain-region" data-info="Spinal Cord: Extends from the brain and through the vertebral column. Carries signals between the brain and the rest of the body."/>
+                                                <text x="300" y="205" text-anchor="middle" fill="white">Spinal Cord</text>
+                                                
+                                                <!-- PNS Components -->
+                                                <rect x="400" y="180" width="100" height="40" rx="5" fill="#6366f1" id="somatic" class="brain-region" data-info="Somatic Nervous System: Controls voluntary movements and transmits sensory information from the skin, muscles, and joints."/>
+                                                <text x="450" y="205" text-anchor="middle" fill="white">Somatic</text>
+                                                
+                                                <rect x="600" y="180" width="100" height="40" rx="5" fill="#6366f1" id="autonomic" class="brain-region" data-info="Autonomic Nervous System: Regulates internal organs and glands, typically operating below the level of consciousness."/>
+                                                <text x="650" y="205" text-anchor="middle" fill="white">Autonomic</text>
+                                                
+                                                <!-- Lines from Autonomic -->
+                                                <line x1="650" y1="220" x2="600" y2="260" stroke="#6366f1" stroke-width="2"/>
+                                                <line x1="650" y1="220" x2="700" y2="260" stroke="#6366f1" stroke-width="2"/>
+                                                
+                                                <!-- Autonomic Components -->
+                                                <rect x="550" y="260" width="100" height="40" rx="5" fill="#818cf8" id="sympathetic" class="brain-region" data-info="Sympathetic Division: Prepares the body for intense activity ('fight-or-flight'). Increases heart rate, blood pressure, and breathing rate."/>
+                                                <text x="600" y="285" text-anchor="middle" fill="white">Sympathetic</text>
+                                                
+                                                <rect x="650" y="260" width="100" height="40" rx="5" fill="#818cf8" id="parasympathetic" class="brain-region" data-info="Parasympathetic Division: Conserves energy ('rest-and-digest'). Decreases heart rate, blood pressure, and promotes digestion."/>
+                                                <text x="700" y="285" text-anchor="middle" fill="white" font-size="11">Parasympathetic</text>
+                                                
+                                                <!-- Info Box -->
+                                                <rect x="100" y="320" width="600" height="60" rx="5" fill="#e0e7ff" id="info-box"/>
+                                                <text x="110" y="345" id="info-text" font-size="14">Click on any component to learn more about it.</text>
+                                            </svg>
+                                        </div>
+                                        <p class="text-sm text-center text-gray-600">Click on any part of the diagram to learn more</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Interactive Flashcard -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="bg-indigo-100 px-4 py-2 border-b border-indigo-200">
+                                        <h4 class="font-medium text-indigo-800">Concept Flashcard</h4>
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="flashcard-container h-48">
+                                            <div class="flashcard">
+                                                <div class="flashcard-front rounded-lg flex items-center justify-center h-full">
+                                                    <p class="text-center font-medium">What are the key differences between the sympathetic and parasympathetic divisions?</p>
+                                                </div>
+                                                <div class="flashcard-back rounded-lg h-full overflow-auto">
+                                                    <div class="p-4">
+                                                        <p class="text-sm"><strong>Sympathetic Division ("Fight-or-Flight")</strong></p>
+                                                        <ul class="list-disc list-inside text-sm mt-1 mb-2">
+                                                            <li>Activates during stress or emergency</li>
+                                                            <li>Increases heart rate and blood pressure</li>
+                                                            <li>Dilates pupils and airways</li>
+                                                            <li>Decreases digestive activity</li>
+                                                        </ul>
+                                                        <p class="text-sm"><strong>Parasympathetic Division ("Rest-and-Digest")</strong></p>
+                                                        <ul class="list-disc list-inside text-sm mt-1">
+                                                            <li>Dominates during relaxed states</li>
+                                                            <li>Decreases heart rate and blood pressure</li>
+                                                            <li>Constricts pupils</li>
+                                                            <li>Increases digestive activity</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="flip-card-btn mt-4 w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 py-2 rounded transition-colors">Flip Card</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Check Your Understanding -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="bg-green-100 px-4 py-2 border-b border-green-200">
+                                        <h4 class="font-medium text-green-800">Check Your Understanding</h4>
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="mb-4">
+                                            <p class="font-medium mb-2">A person experiences increased heart rate, dilated pupils, and slowed digestion. Which division of the nervous system is primarily active?</p>
+                                            <div class="space-y-2">
+                                                <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="true">
+                                                    A) Sympathetic division
+                                                </div>
+                                                <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="false">
+                                                    B) Parasympathetic division
+                                                </div>
+                                                <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="false">
+                                                    C) Somatic division
+                                                </div>
+                                                <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="false">
+                                                    D) Central division
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="question-feedback-1-2" class="hidden mb-3 p-3 rounded-lg"></div>
+                                        <button id="check-answer-btn-1-2" class="w-full bg-green-100 hover:bg-green-200 text-green-800 py-2 rounded transition-colors">Check Answer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Application Example -->
+                        <div class="mt-8 bg-gray-50 rounded-lg p-5 border border-gray-200">
+                            <h4 class="text-lg font-medium mb-3 text-indigo-700">Real-World Application: Stress Response</h4>
+                            <p class="mb-3">Understanding the nervous system helps explain how the body responds to stress:</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h5 class="font-medium text-indigo-600 mb-2">Short-term Stress Response</h5>
+                                    <ol class="list-decimal list-inside space-y-1">
+                                        <li>The brain (part of CNS) perceives a threat</li>
+                                        <li>Signals sent to the hypothalamus</li>
+                                        <li>Sympathetic division activates</li>
+                                        <li>Adrenal glands release adrenaline</li>
+                                        <li>Body experiences "fight-or-flight" response: increased heart rate, rapid breathing, heightened alertness</li>
+                                        <li>After threat passes, parasympathetic division restores calm</li>
+                                    </ol>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h5 class="font-medium text-indigo-600 mb-2">Chronic Stress Consequences</h5>
+                                    <p class="mb-2">Prolonged activation of the sympathetic system due to chronic stress can lead to:</p>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li>Weakened immune system</li>
+                                        <li>Digestive problems</li>
+                                        <li>Sleep disturbances</li>
+                                        <li>Cardiovascular issues</li>
+                                        <li>Memory and concentration problems</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="mt-4">This example shows how multiple divisions of the nervous system work together, along with the endocrine system, to respond to environmental challenges.</p>
+                        </div>
+                        
+                        <!-- Mark as Complete Button -->
+                        <div class="mt-6 text-right">
+                            <button class="complete-topic-btn bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-medium py-2 px-4 rounded-lg transition-colors" data-topic="unit1-2">
+                                <i class="fas fa-check mr-2"></i>Mark as Complete
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 1.3 Neuron & Neural Firing -->
+                    <div id="unit1-3" class="unit1-content tab-content">
+                        <h3 class="text-xl font-semibold mb-4 text-indigo-700">1.3 The Neuron and Neural Firing</h3>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2">
+                                <p class="mb-4">Neurons are the fundamental units of the nervous system, specialized cells designed to transmit information through electrical and chemical signals. The human brain contains approximately 86 billion neurons, forming an intricate network that enables all mental processes.</p>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">Neuron Structure</h4>
+                                
+                                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                                    <p>Neurons have a distinctive structure specialized for communication:</p>
+                                    <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                                            <h5 class="font-medium text-indigo-600 mb-1">Cell Body (Soma)</h5>
+                                            <p class="text-sm">Contains the nucleus and maintains the cell's life processes. Integrates incoming information from dendrites.</p>
+                                        </div>
+                                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                                            <h5 class="font-medium text-indigo-600 mb-1">Dendrites</h5>
+                                            <p class="text-sm">Branch-like extensions that receive signals from other neurons. They increase the surface area for receiving input.</p>
+                                        </div>
+                                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                                            <h5 class="font-medium text-indigo-600 mb-1">Axon</h5>
+                                            <p class="text-sm">Long fiber that conducts electrical impulses away from the cell body toward other neurons, muscles, or glands.</p>
+                                        </div>
+                                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                                            <h5 class="font-medium text-indigo-600 mb-1">Myelin Sheath</h5>
+                                            <p class="text-sm">Fatty insulation that covers some axons. Increases the speed of neural transmission through saltatory conduction.</p>
+                                        </div>
+                                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                                            <h5 class="font-medium text-indigo-600 mb-1">Nodes of Ranvier</h5>
+                                            <p class="text-sm">Gaps in the myelin sheath where the action potential "jumps" during saltatory conduction.</p>
+                                        </div>
+                                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                                            <h5 class="font-medium text-indigo-600 mb-1">Terminal Buttons</h5>
+                                            <p class="text-sm">Bulb-like endings of the axon branches that contain neurotransmitters. Release chemicals into the synapse.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">Types of Neurons</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-indigo-700 mb-2">Sensory Neurons</h5>
+                                        <p class="text-sm">Carry information from sensory receptors to the central nervous system. Example: neurons that transmit pain signals from your finger when you touch something hot.</p>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-indigo-700 mb-2">Motor Neurons</h5>
+                                        <p class="text-sm">Carry commands from the central nervous system to muscles and glands. Example: neurons that signal your leg muscles to contract when walking.</p>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-indigo-700 mb-2">Interneurons</h5>
+                                        <p class="text-sm">Connect sensory and motor neurons within the central nervous system. Example: neurons in the spinal cord that process and relay signals between incoming sensory and outgoing motor neurons.</p>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">The Action Potential</h4>
+                                
+                                <p class="mb-3">Neurons communicate through electrical signals called action potentials. This process involves changes in the electrical charge across the neuron's membrane:</p>
+                                
+                                <div class="space-y-3 mb-6">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center mt-0.5">
+                                            <span class="text-indigo-800 font-semibold">1</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h5 class="font-medium">Resting Potential</h5>
+                                            <p class="text-sm">When inactive, the neuron maintains a negative charge (about -70mV) inside relative to outside, due to differences in ion concentrations.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center mt-0.5">
+                                            <span class="text-indigo-800 font-semibold">2</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h5 class="font-medium">Depolarization</h5>
+                                            <p class="text-sm">When the neuron receives sufficient stimulation, sodium channels open, allowing positive sodium ions to rush in. This makes the inside of the cell more positive.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center mt-0.5">
+                                            <span class="text-indigo-800 font-semibold">3</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h5 class="font-medium">Threshold</h5>
+                                            <p class="text-sm">If the membrane potential reaches the threshold level (about -55mV), an action potential is triggered. This is an "all-or-nothing" response.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center mt-0.5">
+                                            <span class="text-indigo-800 font-semibold">4</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h5 class="font-medium">Action Potential</h5>
+                                            <p class="text-sm">The membrane potential rapidly reverses, becoming positive inside. This spike of electricity travels down the axon.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center mt-0.5">
+                                            <span class="text-indigo-800 font-semibold">5</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h5 class="font-medium">Repolarization</h5>
+                                            <p class="text-sm">Potassium channels open, allowing positive potassium ions to flow out. The membrane potential returns to negative.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center mt-0.5">
+                                            <span class="text-indigo-800 font-semibold">6</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h5 class="font-medium">Refractory Period</h5>
+                                            <p class="text-sm">A brief period during which the neuron cannot fire again, as ion concentrations return to normal.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">Synaptic Transmission</h4>
+                                
+                                <p class="mb-3">Neurons communicate with other neurons across synapses, the tiny gaps between cells:</p>
+                                
+                                <div class="space-y-3 mb-6">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mt-0.5">
+                                            <span class="text-purple-800 font-semibold">1</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h5 class="font-medium">Action Potential Arrival</h5>
+                                            <p class="text-sm">The action potential travels down the axon and reaches the terminal buttons.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mt-0.5">
+                                            <span class="text-purple-800 font-semibold">2</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h5 class="font-medium">Neurotransmitter Release</h5>
+                                            <p class="text-sm">Calcium ions enter the terminal, triggering synaptic vesicles to fuse with the cell membrane and release neurotransmitters into the synaptic cleft.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mt-0.5">
+                                            <span class="text-purple-800 font-semibold">3</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h5 class="font-medium">Receptor Binding</h5>
+                                            <p class="text-sm">Neurotransmitters cross the synaptic cleft and bind to specific receptor sites on the receiving neuron's dendrites or cell body.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mt-0.5">
+                                            <span class="text-purple-800 font-semibold">4</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h5 class="font-medium">Postsynaptic Potential</h5>
+                                            <p class="text-sm">Binding causes ion channels to open or close, creating either excitatory postsynaptic potentials (EPSPs) that make the neuron more likely to fire, or inhibitory postsynaptic potentials (IPSPs) that make it less likely to fire.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mt-0.5">
+                                            <span class="text-purple-800 font-semibold">5</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h5 class="font-medium">Neurotransmitter Inactivation</h5>
+                                            <p class="text-sm">Neurotransmitters are quickly removed from the synaptic cleft through reuptake, enzymatic breakdown, or diffusion to terminate the signal.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">Major Neurotransmitters</h4>
+                                
+                                <div class="overflow-x-auto mb-6">
+                                    <table class="w-full border-collapse">
+                                        <thead>
+                                            <tr class="bg-indigo-50">
+                                                <th class="border px-4 py-2 text-left text-indigo-700">Neurotransmitter</th>
+                                                <th class="border px-4 py-2 text-left text-indigo-700">Function</th>
+                                                <th class="border px-4 py-2 text-left text-indigo-700">Related Disorders/Drugs</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="border px-4 py-2 font-medium">Acetylcholine (ACh)</td>
+                                                <td class="border px-4 py-2">Activates muscles; involved in attention, arousal, and memory</td>
+                                                <td class="border px-4 py-2">Alzheimer's disease (deficit); nicotine (increases ACh)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border px-4 py-2 font-medium">Dopamine</td>
+                                                <td class="border px-4 py-2">Involved in movement, pleasure, motivation, and reinforcement</td>
+                                                <td class="border px-4 py-2">Parkinson's (deficit); schizophrenia (excess); cocaine, amphetamines (increase)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border px-4 py-2 font-medium">Serotonin</td>
+                                                <td class="border px-4 py-2">Regulates mood, sleep, appetite, and impulsivity</td>
+                                                <td class="border px-4 py-2">Depression (deficit); SSRIs like Prozac (increase); LSD (affects receptors)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border px-4 py-2 font-medium">Norepinephrine</td>
+                                                <td class="border px-4 py-2">Involved in arousal, alertness, and stress response</td>
+                                                <td class="border px-4 py-2">Depression and ADHD (deficit); amphetamines (increase)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border px-4 py-2 font-medium">GABA</td>
+                                                <td class="border px-4 py-2">Main inhibitory neurotransmitter; reduces neural activity</td>
+                                                <td class="border px-4 py-2">Anxiety disorders (deficit); benzodiazepines and alcohol (enhance GABA)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border px-4 py-2 font-medium">Glutamate</td>
+                                                <td class="border px-4 py-2">Main excitatory neurotransmitter; involved in learning and memory</td>
+                                                <td class="border px-4 py-2">Stroke damage (excess); ketamine (blocks receptors)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border px-4 py-2 font-medium">Endorphins</td>
+                                                <td class="border px-4 py-2">Natural painkillers; produce feelings of pleasure and well-being</td>
+                                                <td class="border px-4 py-2">Pain relief; opioids like morphine (mimic endorphins)</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-6">
+                                <!-- Interactive Neuron Diagram -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="bg-indigo-100 px-4 py-2 border-b border-indigo-200">
+                                        <h4 class="font-medium text-indigo-800">Neuron Structure</h4>
+                                    </div>
+                                    <div class="p-4">
+                                        <div id="neuron-diagram" class="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center mb-3">
+                                            <svg width="100%" height="100%" viewBox="0 0 800 300">
+                                                <!-- Dendrites -->
+                                                <path d="M150,150 C120,100 80,130 60,110 M150,150 C130,120 100,100 80,80 M150,150 C140,80 120,60 100,50 M150,150 C160,100 180,70 200,50 M150,150 C180,120 200,90 220,80" 
+                                                      stroke="#6366f1" stroke-width="3" fill="none" id="dendrites" class="brain-region" 
+                                                      data-info="Dendrites: Branch-like extensions that receive signals from other neurons. They have receptors that bind to neurotransmitters released by neighboring neurons."/>
+                                                
+                                                <!-- Cell Body -->
+                                                <circle cx="150" cy="150" r="40" fill="#818cf8" stroke="#6366f1" stroke-width="2" id="cell-body" class="brain-region" 
+                                                        data-info="Cell Body (Soma): Contains the nucleus and other organelles. Maintains the cell's life functions and integrates incoming signals from dendrites."/>
+                                                <circle cx="150" cy="150" r="15" fill="#c7d2fe" stroke="#6366f1" stroke-width="1" id="nucleus" class="brain-region" 
+                                                        data-info="Nucleus: Contains the neuron's DNA and controls cellular activities, including protein synthesis."/>
+                                                
+                                                <!-- Axon Hillock -->
+                                                <path d="M190,150 Q210,150 220,150" stroke="#6366f1" stroke-width="5" fill="none" id="axon-hillock" class="brain-region" 
+                                                      data-info="Axon Hillock: The region where the cell body connects to the axon. This is where action potentials are initiated if the neuron's total excitation reaches threshold."/>
+                                                
+                                                <!-- Axon -->
+                                                <path d="M220,150 L500,150" stroke="#6366f1" stroke-width="4" fill="none" id="axon" class="brain-region" 
+                                                      data-info="Axon: The long fiber that conducts electrical impulses away from the cell body. Action potentials travel down the axon to the terminal buttons."/>
+                                                
+                                                <!-- Myelin Sheath -->
+                                                <rect x="250" y="140" width="40" height="20" fill="#e0e7ff" stroke="#6366f1" stroke-width="1" rx="5" id="myelin1" class="brain-region" 
+                                                      data-info="Myelin Sheath: Fatty insulation wrapped around the axon. Increases speed of neural transmission and helps conserve energy."/>
+                                                <rect x="310" y="140" width="40" height="20" fill="#e0e7ff" stroke="#6366f1" stroke-width="1" rx="5" id="myelin2" class="brain-region" 
+                                                      data-info="Myelin Sheath: Fatty insulation wrapped around the axon. Increases speed of neural transmission and helps conserve energy."/>
+                                                <rect x="370" y="140" width="40" height="20" fill="#e0e7ff" stroke="#6366f1" stroke-width="1" rx="5" id="myelin3" class="brain-region" 
+                                                      data-info="Myelin Sheath: Fatty insulation wrapped around the axon. Increases speed of neural transmission and helps conserve energy."/>
+                                                <rect x="430" y="140" width="40" height="20" fill="#e0e7ff" stroke="#6366f1" stroke-width="1" rx="5" id="myelin4" class="brain-region" 
+                                                      data-info="Myelin Sheath: Fatty insulation wrapped around the axon. Increases speed of neural transmission and helps conserve energy."/>
+                                                
+                                                <!-- Nodes of Ranvier -->
+                                                <rect x="290" y="145" width="20" height="10" fill="#6366f1" id="node1" class="brain-region" 
+                                                      data-info="Nodes of Ranvier: Gaps in the myelin sheath where the axon is exposed. The action potential 'jumps' from node to node (saltatory conduction), increasing transmission speed."/>
+                                                <rect x="350" y="145" width="20" height="10" fill="#6366f1" id="node2" class="brain-region" 
+                                                      data-info="Nodes of Ranvier: Gaps in the myelin sheath where the axon is exposed. The action potential 'jumps' from node to node (saltatory conduction), increasing transmission speed."/>
+                                                <rect x="410" y="145" width="20" height="10" fill="#6366f1" id="node3" class="brain-region" 
+                                                      data-info="Nodes of Ranvier: Gaps in the myelin sheath where the axon is exposed. The action potential 'jumps' from node to node (saltatory conduction), increasing transmission speed."/>
+                                                
+                                                <!-- Axon Terminals -->
+                                                <path d="M500,150 C520,150 530,170 540,200" stroke="#6366f1" stroke-width="3" fill="none"/>
+                                                <path d="M500,150 C520,150 530,130 540,100" stroke="#6366f1" stroke-width="3" fill="none"/>
+                                                <path d="M500,150 C510,150 520,150 530,150" stroke="#6366f1" stroke-width="3" fill="none"/>
+                                                
+                                                <!-- Terminal Buttons -->
+                                                <circle cx="540" cy="200" r="15" fill="#a5b4fc" stroke="#6366f1" stroke-width="2" id="terminal1" class="brain-region" 
+                                                        data-info="Terminal Buttons: Bulb-like structures at the end of axon branches that contain neurotransmitters. When an action potential arrives, they release chemicals into the synapse."/>
+                                                <circle cx="540" cy="100" r="15" fill="#a5b4fc" stroke="#6366f1" stroke-width="2" id="terminal2" class="brain-region" 
+                                                        data-info="Terminal Buttons: Bulb-like structures at the end of axon branches that contain neurotransmitters. When an action potential arrives, they release chemicals into the synapse."/>
+                                                <circle cx="530" cy="150" r="15" fill="#a5b4fc" stroke="#6366f1" stroke-width="2" id="terminal3" class="brain-region" 
+                                                        data-info="Terminal Buttons: Bulb-like structures at the end of axon branches that contain neurotransmitters. When an action potential arrives, they release chemicals into the synapse."/>
+                                                
+                                                <!-- Synaptic Vesicles inside terminal button -->
+                                                <circle cx="535" cy="205" r="3" fill="#4f46e5"/>
+                                                <circle cx="545" cy="205" r="3" fill="#4f46e5"/>
+                                                <circle cx="535" cy="195" r="3" fill="#4f46e5"/>
+                                                <circle cx="545" cy="195" r="3" fill="#4f46e5"/>
+                                                
+                                                <!-- Synapse -->
+                                                <rect x="555" y="185" width="10" height="30" fill="#e0e7ff" id="synapse" class="brain-region" 
+                                                      data-info="Synapse: The junction between neurons where information is transmitted. Contains the synaptic cleft, a tiny gap across which neurotransmitters travel."/>
+                                                
+                                                <!-- Receiving Dendrite -->
+                                                <path d="M565,200 C580,200 600,200 620,200" stroke="#6366f1" stroke-width="5" fill="none"/>
+                                                <path d="M620,200 C640,210 650,210 670,200" stroke="#6366f1" stroke-width="3" fill="none"/>
+                                                <path d="M620,200 C640,190 650,190 670,200" stroke="#6366f1" stroke-width="3" fill="none"/>
+                                                
+                                                <!-- Info Box -->
+                                                <rect x="80" y="240" width="640" height="50" rx="5" fill="#e0e7ff" id="info-box-neuron"/>
+                                                <text x="90" y="265" id="info-text-neuron" font-size="14">Click on any part of the neuron to learn more about it.</text>
+                                            </svg>
+                                        </div>
+                                        <p class="text-sm text-center text-gray-600">Click on any part of the neuron to learn more</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Interactive Flashcard -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="bg-indigo-100 px-4 py-2 border-b border-indigo-200">
+                                        <h4 class="font-medium text-indigo-800">Neural Firing Flashcard</h4>
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="flashcard-container h-48">
+                                            <div class="flashcard">
+                                                <div class="flashcard-front rounded-lg flex items-center justify-center h-full">
+                                                    <p class="text-center font-medium">What is the "all-or-nothing" principle in neural firing?</p>
+                                                </div>
+                                                <div class="flashcard-back rounded-lg h-full overflow-auto">
+                                                    <div class="p-4">
+                                                        <p class="text-sm">The "all-or-nothing" principle refers to the fact that an action potential either happens completely or not at all.</p>
+                                                        <p class="text-sm mt-2">Key points:</p>
+                                                        <ul class="list-disc list-inside text-sm mt-1">
+                                                            <li>If stimulation is below threshold, no action potential occurs</li>
+                                                            <li>Once threshold is reached, the action potential proceeds at full strength</li>
+                                                            <li>Action potentials are uniform in size and strength</li>
+                                                            <li>Neurons communicate intensity through firing frequency, not action potential size</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="flip-card-btn mt-4 w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 py-2 rounded transition-colors">Flip Card</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Check Your Understanding -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                                    <div class="bg-green-100 px-4 py-2 border-b border-green-200">
+                                        <h4 class="font-medium text-green-800">Check Your Understanding</h4>
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="mb-4">
+                                            <p class="font-medium mb-2">Which neurotransmitter is associated with the symptoms of Parkinson's disease when deficient?</p>
+                                            <div class="space-y-2">
+                                                <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="false">
+                                                    A) Serotonin
+                                                </div>
+                                                <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="true">
+                                                    B) Dopamine
+                                                </div>
+                                                <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="false">
+                                                    C) GABA
+                                                </div>
+                                                <div class="quiz-option border rounded-lg p-3 cursor-pointer" data-correct="false">
+                                                    D) Acetylcholine
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="question-feedback-1-3" class="hidden mb-3 p-3 rounded-lg"></div>
+                                        <button id="check-answer-btn-1-3" class="w-full bg-green-100 hover:bg-green-200 text-green-800 py-2 rounded transition-colors">Check Answer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Application Example -->
+                        <div class="mt-8 bg-gray-50 rounded-lg p-5 border border-gray-200">
+                            <h4 class="text-lg font-medium mb-3 text-indigo-700">Real-World Application: How Drugs Affect Neural Communication</h4>
+                            <p class="mb-4">Understanding neural transmission helps explain how various psychoactive substances affect the brain:</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h5 class="font-medium text-indigo-600 mb-2">Stimulants (e.g., Cocaine, Amphetamines)</h5>
+                                    <p class="text-sm">Increase activity of dopamine and norepinephrine by:</p>
+                                    <ul class="list-disc list-inside text-sm mt-1">
+                                        <li>Blocking reuptake (cocaine)</li>
+                                        <li>Stimulating release (amphetamines)</li>
+                                        <li>Results: increased alertness, euphoria, reduced appetite</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h5 class="font-medium text-indigo-600 mb-2">Depressants (e.g., Alcohol, Benzodiazepines)</h5>
+                                    <p class="text-sm">Enhance effects of GABA, the main inhibitory neurotransmitter:</p>
+                                    <ul class="list-disc list-inside text-sm mt-1">
+                                        <li>GABA opens chloride ion channels</li>
+                                        <li>Inhibits neural firing</li>
+                                        <li>Results: sedation, reduced anxiety, impaired coordination</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h5 class="font-medium text-indigo-600 mb-2">Antidepressants (e.g., SSRIs)</h5>
+                                    <p class="text-sm">Affect serotonin levels in synapses:</p>
+                                    <ul class="list-disc list-inside text-sm mt-1">
+                                        <li>Block serotonin reuptake from synaptic cleft</li>
+                                        <li>Increase available serotonin</li>
+                                        <li>Results: mood elevation (after sustained use)</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h5 class="font-medium text-indigo-600 mb-2">Opioids (e.g., Morphine, Heroin)</h5>
+                                    <p class="text-sm">Mimic endorphins, our natural painkillers:</p>
+                                    <ul class="list-disc list-inside text-sm mt-1">
+                                        <li>Bind to opioid receptors</li>
+                                        <li>Inhibit pain signals</li>
+                                        <li>Trigger dopamine release</li>
+                                        <li>Results: pain relief, euphoria, respiratory depression</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h5 class="font-medium text-indigo-600 mb-2">Hallucinogens (e.g., LSD)</h5>
+                                    <p class="text-sm">Primarily affect serotonin systems:</p>
+                                    <ul class="list-disc list-inside text-sm mt-1">
+                                        <li>Bind to specific serotonin receptors</li>
+                                        <li>Alter sensory processing and mood</li>
+                                        <li>Results: perceptual distortions, altered consciousness</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h5 class="font-medium text-indigo-600 mb-2">Tolerance and Dependence</h5>
+                                    <p class="text-sm">Repeated exposure leads to neuroadaptations:</p>
+                                    <ul class="list-disc list-inside text-sm mt-1">
+                                        <li>Down-regulation of receptors</li>
+                                        <li>Changes in neurotransmitter production</li>
+                                        <li>Result: need for more drug to achieve same effect</li>
+                                        <li>Withdrawal when drug is removed</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <p class="mt-4">This application shows how understanding the mechanisms of neural communication is essential for explaining drug effects, addiction, and treatment approaches.</p>
+                        </div>
+                        
+                        <!-- Mark as Complete Button -->
+                        <div class="mt-6 text-right">
+                            <button class="complete-topic-btn bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-medium py-2 px-4 rounded-lg transition-colors" data-topic="unit1-3">
+                                <i class="fas fa-check mr-2"></i>Mark as Complete
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 1.4 The Brain -->
+                    <div id="unit1-4" class="unit1-content tab-content">
+                        <h3 class="text-xl font-semibold mb-4 text-indigo-700">1.4 The Brain</h3>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2">
+                                <p class="mb-4">The human brain is the center of the nervous system, containing approximately 86 billion neurons. It's responsible for all thought, sensation, emotion, and behavior. The brain can be divided into several major regions, each with specialized functions.</p>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">Major Brain Structures</h4>
+                                
+                                <div class="space-y-6 mb-6">
+                                    <div class="bg-blue-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-blue-700 mb-2">The Brainstem</h5>
+                                        <p class="mb-2">The most primitive part of the brain, connecting the spinal cord to the rest of the brain. It controls basic life functions.</p>
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+                                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                                <h6 class="font-medium text-indigo-600 text-sm">Medulla</h6>
+                                                <p class="text-xs">Controls vital autonomic functions including heartbeat, breathing, blood pressure, and swallowing.</p>
+                                            </div>
+                                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                                <h6 class="font-medium text-indigo-600 text-sm">Pons</h6>
+                                                <p class="text-xs">Helps coordinate movement and plays a role in sleep, arousal, and breathing regulation.</p>
+                                            </div>
+                                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                                <h6 class="font-medium text-indigo-600 text-sm">Reticular Formation</h6>
+                                                <p class="text-xs">A network of nuclei critical for regulating arousal, attention, and sleep-wake transitions.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-purple-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-purple-700 mb-2">The Cerebellum</h5>
+                                        <p>Located at the back of the brain, beneath the cerebral hemispheres. Though only 10% of the brain's volume, it contains over 50% of all neurons.</p>
+                                        <ul class="list-disc list-inside mt-2 space-y-1">
+                                            <li>Coordinates voluntary movement and balance</li>
+                                            <li>Helps with motor learning and muscle memory</li>
+                                            <li>Plays a role in certain cognitive functions</li>
+                                            <li>Damage results in jerky, uncoordinated movements</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="bg-green-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-green-700 mb-2">The Limbic System</h5>
+                                        <p class="mb-2">A collection of structures involved in emotion, motivation, memory, and learning.</p>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                                <h6 class="font-medium text-indigo-600 text-sm">Amygdala</h6>
+                                                <p class="text-xs">Processes emotions, especially fear and aggression. Critical for emotional learning and memory.</p>
+                                            </div>
+                                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                                <h6 class="font-medium text-indigo-600 text-sm">Hippocampus</h6>
+                                                <p class="text-xs">Essential for forming new long-term memories. Damage results in anterograde amnesia.</p>
+                                            </div>
+                                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                                <h6 class="font-medium text-indigo-600 text-sm">Hypothalamus</h6>
+                                                <p class="text-xs">Regulates homeostasis (body temperature, hunger, thirst, sleep). Links nervous and endocrine systems.</p>
+                                            </div>
+                                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                                <h6 class="font-medium text-indigo-600 text-sm">Thalamus</h6>
+                                                <p class="text-xs">Major sensory relay center that filters information going to the cortex. The "gateway" to consciousness.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-red-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-red-700 mb-2">The Cerebral Cortex</h5>
+                                        <p class="mb-2">The outermost layer of the cerebrum, composed of gray matter (neuron cell bodies). It's wrinkled to increase surface area and is divided into two hemispheres.</p>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                                <h6 class="font-medium text-indigo-600 text-sm">Frontal Lobe</h6>
+                                                <p class="text-xs">Involved in higher cognitive functions, decision making, planning, personality, and motor control. Contains the prefrontal cortex, critical for executive function.</p>
+                                            </div>
+                                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                                <h6 class="font-medium text-indigo-600 text-sm">Parietal Lobe</h6>
+                                                <p class="text-xs">Processes somatosensory information (touch, temperature, pain). Important for spatial awareness and attention.</p>
+                                            </div>
+                                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                                <h6 class="font-medium text-indigo-600 text-sm">Temporal Lobe</h6>
+                                                <p class="text-xs">Processes auditory information and involved in language comprehension. Contains structures important for memory.</p>
+                                            </div>
+                                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                                <h6 class="font-medium text-indigo-600 text-sm">Occipital Lobe</h6>
+                                                <p class="text-xs">Processes visual information. Different areas handle different aspects of vision (color, motion, form).</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">Specialized Areas within the Cortex</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-indigo-700 mb-2">Primary Sensory Areas</h5>
+                                        <ul class="list-disc list-inside space-y-1">
+                                            <li><strong>Primary Visual Cortex:</strong> Processes basic visual information like edges, orientation</li>
+                                            <li><strong>Primary Auditory Cortex:</strong> Processes basic sound information like pitch, volume</li>
+                                            <li><strong>Primary Somatosensory Cortex:</strong> Processes touch, temperature, and pain from body parts</li>
+                                            <li><strong>Gustatory Cortex:</strong> Processes taste</li>
+                                            <li><strong>Olfactory Cortex:</strong> Processes smell</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <h5 class="font-medium text-indigo-700 mb-2">Association Areas</h5>
+                                        <ul class="list-disc list-inside space-y-1">
+                                            <li><strong>Wernicke's Area:</strong> Language comprehension (temporal lobe)</li>
+                                            <li><strong>Broca's Area:</strong> Speech production (frontal lobe)</li>
+                                            <li><strong>Prefrontal Cortex:</strong> Executive functions, personality, decision-making</li>
+                                            <li><strong>Angular Gyrus:</strong> Cross-modal associations, reading</li>
+                                            <li><strong>Motor Association Cortex:</strong> Movement planning and coordination</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="text-lg font-medium mb-3 text-indigo-600">Cerebral Lateralization and Hemispheric Specialization</h4>
+                                
+                                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                                    <h5 class="font-medium text-blue-700 mb-2">Left vs. Right Hemisphere</h5>
+                                    <p class="mb-3">While both hemispheres work together, they show some specialization:</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                                            <h6 class="font-medium text-indigo-600">Left Hemisphere</h6>
+                                            <p class="text-sm mb-1">Typically dominant for:</p>
+                                            <ul class="list-disc list-inside text-sm">
+                                                <li>Language processing (in most people)</li>
+                                                <li>Logical and analytical thinking</li>
+                                                <li>Sequential processing</li>
+                                                <li>Mathematical calculations</li>
+                                            </ul>
+                                        </div>
+                                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                                            <h6 class="font-medium text-indigo-600">Right Hemisphere</h6>
+                                            <p class="text-sm mb-1">Typically dominant for:</p>
+                                            <ul class="list-disc list-inside text-sm">
+                                                <li>Spatial abilities and face recognition</li>
